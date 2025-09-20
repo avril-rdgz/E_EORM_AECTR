@@ -4,7 +4,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-#---Question 2---
+# --- I/O settings ---
+DATA_FILE = "crsp_data.csv"
+OUT_DIR = "outputs"
+os.makedirs(OUT_DIR, exist_ok=True)
+
+# --- Question 2 ---
+
 # Given parameters and initialization
 alpha = 0.4
 gamma = [0.01, 0.1, 1.0]
@@ -13,7 +19,7 @@ delta = [0.3, 0.1, 0.0, -0.3]
 x = np.linspace(-1.25, 1.25,1000) # X-axis
 # x = np.linspace(-125, 125,1000) not visible
 
-style = ['-', '--', ':'] 
+lines = ['-', '--', ':'] 
 
 # News Impact Curve definition followed by the model without constants, omega and beta.
 def nic(x, delta, gamma):
@@ -27,7 +33,7 @@ fig, axes = plt.subplots(2, 2, figsize=(10, 10))
 axes = axes.ravel()
 
 for ax, d in zip(axes, delta):
-    for g, style in zip(gamma, linestyles):
+    for g, style in zip(gamma, lines):
         sig = nic(x, d, g)
         ax.plot(x, sig, linestyle=style, label=fr"$\gamma={g}$")
     ax.axvline(0, lw=0.3, alpha=0.7, color='grey')
@@ -40,12 +46,11 @@ for ax, d in zip(axes, delta):
 fig.suptitle(r"News impact curves for the GARCH-M-L model $(\mu=0$, $\lambda=0$, $\alpha=0.4$, $\sigma^2_{t-1}=1)$", fontsize=14)
 fig.tight_layout()
 plt.show()
+fig.savefig(os.path.join(OUT_DIR, "Q2_NIC_plots.png"), dpi=400, bbox_inches="tight")
+fig.savefig(os.path.join(OUT_DIR, "Q2_NIC_plots.pdf"), bbox_inches="tight")
 
-#---Question 2---
-# I/O settings
-DATA_FILE = "crsp_data.csv"
-OUT_DIR = "outputs"
-os.makedirs(OUT_DIR, exist_ok=True)
+
+# --- Question 3 ---
 
 # Load data
 df = pd.read_csv(DATA_FILE)
