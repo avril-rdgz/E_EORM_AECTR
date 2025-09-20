@@ -9,13 +9,12 @@ DATA_FILE = "crsp_data.csv"
 OUT_DIR = "outputs"
 os.makedirs(OUT_DIR, exist_ok=True)
 
-#---Question 2---#
+# --- Question 2 ---
 
 # Given parameters and initialization
 alpha = 0.4
 gamma = [0.01, 0.1, 1.0]
 delta = [0.3, 0.1, 0.0, -0.3]
-
 
 x = np.linspace(-1.25, 1.25,1000) # X-axis
 # x = np.linspace(-125, 125,1000) not visible
@@ -24,9 +23,7 @@ lines = ['-', '--', ':']
 
 # News Impact Curve definition followed by the given parameter setting as default
 def nic(x, delta, gamma, mu = 0, lam = 0, sig2_init = 1, omega = 0, beta = 0):
-
     NIC = omega + (alpha + delta * np.tanh(-gamma * x)) * ((x-mu-lam*sig2_init)**2/(sig2_init)) + beta * sig2_init
-
     return NIC
 
 # Ploting
@@ -49,7 +46,6 @@ fig.tight_layout()
 plt.show()
 fig.savefig(os.path.join(OUT_DIR, "Q2_NIC_plots.png"), dpi=400, bbox_inches="tight")
 fig.savefig(os.path.join(OUT_DIR, "Q2_NIC_plots.pdf"), bbox_inches="tight")
-
 
 # --- Question 3 ---
 
