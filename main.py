@@ -4,19 +4,57 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-# --- I/O settings ---
+#---Question 2---
+# Given parameters and initialization
+alpha = 0.4
+gamma = [0.01, 0.1, 1.0]
+delta = [0.3, 0.1, 0.0, -0.3]
+
+x = np.linspace(-1.25, 1.25,1000) # X-axis
+# x = np.linspace(-125, 125,1000) not visible
+
+style = ['-', '--', ':'] 
+
+# News Impact Curve definition followed by the model without constants, omega and beta.
+def nic(x, delta, gamma):
+
+    NIC = (alpha + delta * np.tanh(-gamma * x)) * (x**2)
+
+    return NIC
+
+# Ploting
+fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+axes = axes.ravel()
+
+for ax, d in zip(axes, delta):
+    for g, style in zip(gamma, linestyles):
+        sig = nic(x, d, g)
+        ax.plot(x, sig, linestyle=style, label=fr"$\gamma={g}$")
+    ax.axvline(0, lw=0.3, alpha=0.7, color='grey')
+    ax.set_xticks(np.linspace(-1, 1, 5))  
+    ax.set_title(fr"$\delta={d}$")
+    ax.set_xlabel(r"Past shocks, $x_{t-1}$")
+    ax.set_ylabel("News impact, $\sigma^2_{t}$")
+    ax.legend(frameon=True, fontsize=9)
+
+fig.suptitle(r"News impact curves for the GARCH-M-L model $(\mu=0$, $\lambda=0$, $\alpha=0.4$, $\sigma^2_{t-1}=1)$", fontsize=14)
+fig.tight_layout()
+plt.show()
+
+#---Question 2---
+# I/O settings
 DATA_FILE = "crsp_data.csv"
 OUT_DIR = "outputs"
 os.makedirs(OUT_DIR, exist_ok=True)
 
-# --- Load data ---
+# Load data
 df = pd.read_csv(DATA_FILE)
 df["date"] = pd.to_datetime(df["date"], errors="coerce")
 
-# --- Scale returns IN MEMORY (do NOT overwrite CSV on disk) ---
+# Scale returns IN MEMORY (do NOT overwrite CSV on disk)
 df["RET"] = df["RET"] * 100
 
-# --- Descriptive statistics per ticker ---
+# Descriptive statistics per ticker
 def describe_series(x: pd.Series) -> dict:
     x = x.dropna()
     return {
