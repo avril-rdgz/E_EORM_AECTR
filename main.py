@@ -9,14 +9,54 @@ DATA_FILE = "crsp_data.csv"
 OUT_DIR = "outputs"
 os.makedirs(OUT_DIR, exist_ok=True)
 
-# --- Load data ---
+# --- Question 2 ---
+
+# Given parameters and initialization
+alpha = 0.4
+gamma = [0.01, 0.1, 1.0]
+delta = [0.3, 0.1, 0.0, -0.3]
+
+x = np.linspace(-1.25, 1.25,1000) # X-axis
+# x = np.linspace(-125, 125,1000) not visible
+
+lines = ['-', '--', ':'] 
+
+# News Impact Curve definition followed by the given parameter setting as default
+def nic(x, delta, gamma, mu = 0, lam = 0, sig2_init = 1, omega = 0, beta = 0):
+    NIC = omega + (alpha + delta * np.tanh(-gamma * x)) * ((x-mu-lam*sig2_init)**2/(sig2_init)) + beta * sig2_init
+    return NIC
+
+# Ploting
+fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+axes = axes.ravel()
+
+for ax, d in zip(axes, delta):
+    for g, style in zip(gamma, lines):
+        news_impact = nic(x, d, g)
+        ax.plot(x, news_impact, linestyle=style, label=fr"$\gamma={g}$")
+    ax.axvline(0, lw=0.3, alpha=0.7, color='grey')
+    ax.set_xticks(np.linspace(-1, 1, 5))  
+    ax.set_title(fr"$\delta={d}$")
+    ax.set_xlabel(r"Past shocks, $x_{t-1}$")
+    ax.set_ylabel("News impact, $\sigma^2_{t}$")
+    ax.legend(frameon=True, fontsize=9)
+
+fig.suptitle(r"News impact curves for the GARCH-M-L model $(\mu=0$, $\lambda=0$, $\alpha=0.4$, $\sigma^2_{t-1}=1)$", fontsize=14)
+fig.tight_layout()
+plt.show()
+fig.savefig(os.path.join(OUT_DIR, "Q2_NIC_plots.png"), dpi=400, bbox_inches="tight")
+fig.savefig(os.path.join(OUT_DIR, "Q2_NIC_plots.pdf"), bbox_inches="tight")
+
+# --- Question 3 ---
+
+# Load data
 df = pd.read_csv(DATA_FILE)
 df["date"] = pd.to_datetime(df["date"], errors="coerce")
 
-# --- Scale returns IN MEMORY (do NOT overwrite CSV on disk) ---
+# Scale returns IN MEMORY (do NOT overwrite CSV on disk)
 df["RET"] = df["RET"] * 100
 
-# --- Descriptive statistics per ticker ---
+# Descriptive statistics per ticker
 def describe_series(x: pd.Series) -> dict:
     x = x.dropna()
     return {
