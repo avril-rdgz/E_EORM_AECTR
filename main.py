@@ -9,7 +9,7 @@ DATA_FILE = "crsp_data.csv"
 OUT_DIR = "outputs"
 os.makedirs(OUT_DIR, exist_ok=True)
 
-#---Question 2---#
+# --- Question 2 ---
 
 # Given parameters and initialization
 alpha = 0.4
@@ -21,7 +21,7 @@ delta = [0.3, 0.1, 0.0, -0.3]
 x = np.linspace(-5, 5,1000) 
 lines = ['-', '--', ':'] 
 
-# News Impact Curve definition followed by the model without constants, omega and beta.
+# News Impact Curve definition followed by given parameter setting as default
 def nic(x, delta, gamma, mu = 0, lam = 0, sig2_init = 1, omega = 0, beta = 0):
     NIC = omega + (alpha + delta * np.tanh(-gamma * x)) * ((x-mu-lam*sig2_init)**2/(sig2_init)) + beta * sig2_init
     return NIC
@@ -32,8 +32,8 @@ axes = axes.ravel()
 
 for ax, d in zip(axes, delta):
     for g, style in zip(gamma, lines):
-        sig = nic(x, d, g)
-        ax.plot(x, sig, linestyle=style, label=fr"$\gamma={g}$")
+        news_impact = nic(x, d, g)
+        ax.plot(x, news_impact, linestyle=style, label=fr"$\gamma={g}$")
     ax.axvline(0, lw=0.3, alpha=0.7, color='grey')
     ax.set_xticks(np.linspace(-5, 5, 5))  
     ax.set_title(fr"$\delta={d}$")
