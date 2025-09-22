@@ -4,12 +4,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-# --- I/O settings ---
+# settings
 DATA_FILE = "crsp_data.csv"
 OUT_DIR = "outputs"
 os.makedirs(OUT_DIR, exist_ok=True)
 
-# --- Question 2 ---
+# Question 2
 
 # Given parameters and initialization
 alpha = 0.4
@@ -47,13 +47,13 @@ plt.show()
 fig.savefig(os.path.join(OUT_DIR, "Q2_NIC_plots.png"), dpi=400, bbox_inches="tight")
 fig.savefig(os.path.join(OUT_DIR, "Q2_NIC_plots.pdf"), bbox_inches="tight")
 
-# --- Question 3 ---
+# Question 3
 
 # Load data
 df = pd.read_csv(DATA_FILE)
 df["date"] = pd.to_datetime(df["date"], errors="coerce")
 
-# Scale returns IN MEMORY (do NOT overwrite CSV on disk)
+# Scale returns 
 df["RET"] = df["RET"] * 100
 
 # Descriptive statistics per ticker
@@ -65,7 +65,7 @@ def describe_series(x: pd.Series) -> dict:
         "Median": x.median(),
         "Std. Dev.": x.std(ddof=1),
         "Skewness": x.skew(),
-        "Excess Kurtosis": x.kurt(),  # pandas: Fisher definition -> excess kurtosis
+        "Excess Kurtosis": x.kurt(),  
         "Min": x.min(),
         "Max": x.max(),
     }
@@ -94,8 +94,7 @@ with open(os.path.join(OUT_DIR, "Q3_d_stats.tex"), "w") as f:
         )
     )
 
-print("Saved:", os.path.join(OUT_DIR, "Q3_d_stats.csv"))
-print("Saved:", os.path.join(OUT_DIR, "Q3_d_stats.tex"))
+
 
 # Check Apple values
 check = stats_df.loc["AAPL", ["Mean", "Std. Dev.", "Min", "Max"]].round(4)
@@ -122,7 +121,7 @@ for i, ax in enumerate(axes):
         ax.set_ylabel("Daily return (%)")
         ax.xaxis.set_major_locator(mdates.YearLocator(base=2))  # tick every 2 years
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
-        ax.legend(loc="upper left", frameon=False, fontsize=8)
+        ax.set_ylim(-15, 15)
     else:
         ax.axis("off")
 
