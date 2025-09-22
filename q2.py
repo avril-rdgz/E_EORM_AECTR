@@ -57,6 +57,8 @@ for i, delta in enumerate(deltas):
 
 # fig.suptitle("News-Impact Curves: α=0.4, μ=0, λ=0, σ²_{t−1}=1", y=1.03)
 plt.tight_layout()
+for ax in axes:
+    ax.tick_params(axis='x', labelbottom=True)
 fig.savefig("fig_q2_nic_2x2.png", dpi=300, bbox_inches="tight")
 fig.savefig("fig_q2_nic_2x2.pdf", bbox_inches="tight")
 print("Saved: fig_q2_nic_2x2.(png|pdf)")
